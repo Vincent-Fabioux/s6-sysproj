@@ -1,0 +1,54 @@
+COMMANDES AVEC LE GIT EN LIGNE:
+
+Cloner le répertoire git d'une adresse distante vers un répertoire:
+	git clone https://github.com/Vincent-Fabioux/systeme-projet.git
+
+Mettre à jour le git local:
+	git fetch origin
+
+Recloner un fichier local:
+	git checkout -- fichier
+
+Revenir à l'état du git en ligne:
+	git stash
+	Sauvegarde les modifications dans le stash et les enlève.
+Voir le stash:
+	git stash list
+Remettre un stash:
+	git stash apply stash@{N}
+
+Mettre à jour le git en ligne:
+	git push origin
+
+
+
+COMMANDES SUR LE GIT LOCAL:
+
+Vérifier le status:
+	git status
+
+Afficher toutes les versions:
+	git log
+	-p afficher en plus les modifications
+	-N afficher les N dernières modifications
+OU interface graphique:
+	gitk
+
+Voir quels fichiers ont été modifiés:
+	git diff
+
+Ajouter/mettre à jour:
+	git add src/*.c src/*.h
+
+Valider les changements:
+	git commit -m "Message: quelle modification à été faite"
+Pour tout mettre à jour avant de valider, ajouter -a après commit.
+
+Annuler les changements:
+	git commit -amend
+
+Enlever un fichier du git:
+	git rm fichier
+
+Bouger/renommer un fichier:
+	git mv nom_origine nom_nouveau
