@@ -22,7 +22,7 @@ EXEC = my_shell
 
 # Options de l'editeur de liens
 ifeq ($(OS),Windows_NT)
-    LDFLAGS =
+	LDFLAGS =
 else
 	LDFLAGS =
 endif
@@ -33,13 +33,13 @@ endif
 # Ne pas modifier!
 #
 OBJS1 = $(wildcard $(SRCPATH)/*$(EXTENSION))
-OBJS2 = $(OBJS1:.cpp=.o)
+OBJS2 = $(OBJS1:$(EXTENSION)=.o)
 OBJS3 = $(addprefix $(SRCPATH)/$(OBJPATH)/, $(notdir $(OBJS2)))
 all: $(OBJS3)
 	@ $(CC) -o $(EXEC) $^ $(LDFLAGS)
-$(SRCPATH)/$(OBJPATH)/%.o: $(SRCPATH)/%.cpp
+$(SRCPATH)/$(OBJPATH)/%.o: $(SRCPATH)/%$(EXTENSION)
 	@ $(CC) $(CFLAGS) -o $@ -c $<
 clean:
-	@ rm -rf $(OBJPATH)/*.o
+	@ rm -rf $(SRCPATH)/$(OBJPATH)/*.o
 mrproper: clean
 	@ rm -rf $(EXEC)
