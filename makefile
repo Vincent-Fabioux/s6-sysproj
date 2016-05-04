@@ -4,7 +4,7 @@ CFLAGS = -Wall
 
 INC_PATH =
 
-OBJS = shell_final.o commands.o step2.o
+OBJS = shell_final.o commands.o step2.o step3.o
 
 LIB =
 
@@ -22,6 +22,9 @@ commands.o : ./src/commands.c
 step2.o : ./src/step2.c
 	$(CC) $(CFLAGS) $(INC_PATH) -c $<
 
+step3.o : ./src/step3.c
+	$(CC) $(CFLAGS) $(INC_PATH) -c $<
 
 clean :
 	-rm *.o *~ $(PROG) 
+
