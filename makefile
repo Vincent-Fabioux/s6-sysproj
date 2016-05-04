@@ -1,30 +1,45 @@
+#
+# C/C++ makefile pour Windows/Linux
+# par Vincent Fabioux
+# Ne pas editer la partie Compilation à la fin!
+#
+
+# Compilateur choisi
 CC = gcc
 
+# Extension des fichiers sources
+EXTENSION = .c
+
+# Repertoire des fichiers sources et objets (doivent exister)
+SRCPATH = src
+OBJPATH = obj
+
+# Options du compilateur
 CFLAGS = -Wall
 
-INC_PATH =
+# Nom de l'executable
+EXEC = my_shell
 
-OBJS = shell_final.o commands.o step2.o step3.o
+# Options de l'editeur de liens
+ifeq ($(OS),Windows_NT)
+    LDFLAGS =
+else
+	LDFLAGS =
+endif
 
-LIB =
 
-PROG = my_shell
-
-
-all : $(OBJS) 
-	$(CC) $(INC_PATH) -o $(PROG) $(OBJS) $(LIB) 
-
-shell_final.o : ./src/shell_final.c
-	$(CC) $(CFLAGS)  -c ./src/shell_final.c
-commands.o : ./src/commands.c
-	$(CC) $(CFLAGS) $(INC_PATH) -c $< 
-
-step2.o : ./src/step2.c
-	$(CC) $(CFLAGS) $(INC_PATH) -c $<
-
-step3.o : ./src/step3.c
-	$(CC) $(CFLAGS) $(INC_PATH) -c $<
-
-clean :
-	-rm *.o *~ $(PROG) 
-
+#
+# Compilation du programme
+# Ne pas modifier!
+#
+OBJS1 = $(wildcard $(SRCPATH)/*$(EXTENSION))
+OBJS2 = $(OBJS1:.cpp=.o)
+OBJS3 = $(addprefix $(SRCPATH)/$(OBJPATH)/, $(notdir $(OBJS2)))
+all: $(OBJS3)
+	@ $(CC) -o $(EXEC) $^ $(LDFLAGS)
+$(SRCPATH)/$(OBJPATH)/%.o: $(SRCPATH)/%.cpp
+	@ $(CC) $(CFLAGS) -o $@ -c $<
+clean:
+	@ rm -rf $(OBJPATH)/*.o
+mrproper: clean
+	@ rm -rf $(EXEC)
