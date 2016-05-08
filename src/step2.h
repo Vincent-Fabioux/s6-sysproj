@@ -19,7 +19,7 @@
 
 
 
-void commandHistory(char **command);
+void commandHistory(char **command , char * pathFileHistory);
 
 /**
  * Change le répertoire courant: commande "cd".
