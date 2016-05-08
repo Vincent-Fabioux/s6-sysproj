@@ -21,14 +21,18 @@
 #define USERNAME_MAX_LENGTH		128
 
 
+
 int main(int argc, char** argv)
 {
+	char pathFileHistory[DIRECTORY_MAX_LENGTH];
 	char directoryName[DIRECTORY_MAX_LENGTH];
 	char userName[USERNAME_MAX_LENGTH];
 	char computerName[MACHINE_MAX_LENGTH];
 	char *networkCut=NULL;
 	bool mainLoop = TRUE;
 	
+	getcwd(pathFileHistory, DIRECTORY_MAX_LENGTH*sizeof(char));
+	strcat(pathFileHistory,"/history.txt");
 	// Récupération du nom d'utilisateur et du nom de machine
 	if(getlogin_r(userName, USERNAME_MAX_LENGTH*sizeof(char))
 	|| gethostname(computerName, MACHINE_MAX_LENGTH*sizeof(char)) == -1)
@@ -44,7 +48,7 @@ int main(int argc, char** argv)
 		if(getcwd(directoryName, DIRECTORY_MAX_LENGTH*sizeof(char))) // Récupération du répertoire courant
 		{
 			printf("%s@%s:%s>", userName, computerName, directoryName);
-			mainLoop = readCommand(); // Lecture de la commande
+			mainLoop = readCommand(pathFileHistory); // Lecture de la commande
 		}
 		else
 			return EXIT_FAILURE;
