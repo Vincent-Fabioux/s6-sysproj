@@ -5,7 +5,7 @@
 
 
 /* A COMMENTER */
-void commandHistory(char **command){
+void commandHistory(char **command, char * pathFileHistory){
 	FILE * fp;//Fichier history.txt contenant toutes les commandes deja tapées 
     char * line = NULL;//Buffer contenant les lignes qu'on va lire au fur et a mesure.
     size_t len = 0;
@@ -34,7 +34,7 @@ void commandHistory(char **command){
 		}
 	}
 	//On ouvre le fichier contenant toutes les commandes saisies
-    fp = fopen("history.txt", "r");
+    fp = fopen(pathFileHistory, "r");
     //S il y a eu une erreur lors de l'ouverture
     if (fp == NULL)
         exit(EXIT_FAILURE);
@@ -44,7 +44,7 @@ void commandHistory(char **command){
 		//Si l on voulait executer une certaine ligne on va le faire lors de l incrementation de la taille
 		if(continuer==1){
 			if(taille==n){
-				executeCommand(parseString(line));
+				executeCommand(parseString(line,0),0, pathFileHistory);
 				return;
 			}
 		}
