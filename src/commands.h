@@ -20,22 +20,23 @@
 
 
 
-void addInput(char *commande);
+void addInput(char *commande,char *pathFileHistory);
 
 
 /**
  * Lit une commande dans le terminal et l'exécute.
+ * \param pathFileHistory contenant le chemin du fichier texte d'History
  * \return 1 = continuer et 0 = arrêter la saisie de commandes
  */
-int readCommand();
+int readCommand(char * pathFileHistory);
 
 
 /**
  * Execute une commande donnée.
- * \param command Tableau contenant la commande et les arguments
+ * \param command Tableau contenant la commande et les arguments, nb_pipes contenant le nombre de pipes et  pathFileHistory contenant le chemin du fichier texte d'History
  * \return 1 = succès et 0 = échec
  */
-int executeCommand(char** command);
+int executeCommand(char **command, int nb_pipes ,char * pathFileHistory);
 
 
 /**
@@ -44,7 +45,7 @@ int executeCommand(char** command);
  * \param string Chaîne de caractère à séparer
  * \return Pointeur vers le tableau de chaîne de caractères
  */
-char** parseString(char* string);
+char** parseString(char* string,int *nb_pipes);
 
 
 
