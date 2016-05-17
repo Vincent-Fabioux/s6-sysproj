@@ -4,7 +4,6 @@
 
 
 
-/* A COMMENTER */
 void commandHistory(char **command, char * pathFileHistory){
 	FILE * fp;//Fichier history.txt contenant toutes les commandes deja tapées 
     char * line = NULL;//Buffer contenant les lignes qu'on va lire au fur et a mesure.
@@ -44,7 +43,24 @@ void commandHistory(char **command, char * pathFileHistory){
 		//Si l on voulait executer une certaine ligne on va le faire lors de l incrementation de la taille
 		if(continuer==1){
 			if(taille==n){
-				executeCommand(parseString(line,0),0, pathFileHistory);
+				int nb_pipes=0;
+				int nb_redirections=0;
+				int *positionRedirection=malloc(sizeof(int)*ARG_MAX_NUMBER-1);
+				char ** command=parseStringPipesAndRedirections(line,&nb_pipes,&nb_redirections,positionRedirection);
+				executeCommand(command,nb_pipes,nb_redirections,positionRedirection,pathFileHistory);
+				if(command)
+				{	
+					int k = 0;
+					while(command[k])
+					{	
+						command[k] = NULL;
+						free(command[k]);
+						k++;
+					}
+					free(command);
+				}
+				free(positionRedirection);
+				fclose(fp);
 				return;
 			}
 		}
@@ -52,6 +68,7 @@ void commandHistory(char **command, char * pathFileHistory){
 	//Si le nombre de lignes n que l'on voulait afficher ou la ligne qu'on voulait executer est plus grande que la taille du fichier  
 	if (n>taille){
 		printf("L'argument n'est pas valide : il doit etre compris entre 1 et %d \n",taille);
+		fclose(fp);
 		return;
 	}
 	//On remets le pointeur au debut du fichier
@@ -353,3 +370,4 @@ char* catDirFile(char path[], char file[])
 	
 	return concat;
 }
+
