@@ -10,14 +10,26 @@
 #include <sys/types.h>
 #include <sys/wait.h>
 #include <time.h>
+#include <errno.h>
 #include <unistd.h>
 
-#include "step2.h"
 
+#include "step2.h"
+#include "stepBonus.h"
+#include "step3.h"
+
+#define DIRECTORY_MAX_LENGTH	1024
 #define ARG_MAX_LENGTH			128
 #define ARG_MAX_NUMBER			128
 #define COMMAND_MAX_LENGTH		1024
 
+/**
+ * Permet de determinter le signal CTRL + Z 
+ * 
+ * \param	numero du signal
+ * 
+ */
+void handle_tstp(int num);
 
 /**
  * Rajoute une commande saisie dans le fichier history.txt 
