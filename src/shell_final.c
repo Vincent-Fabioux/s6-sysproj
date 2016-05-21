@@ -9,8 +9,8 @@
 #include <time.h>
 #include <unistd.h>
 
+
 #include "commands.h"
-#include "step2.h"
 
 #define bool	int
 #define TRUE	1
@@ -22,8 +22,15 @@
 
 
 
+
+
 int main(int argc, char** argv)
 {
+	//On definit le CTRL + Z
+	struct sigaction tstp_handler = {.sa_handler=handle_tstp};
+	tstp_handler.sa_flags = SA_NOCLDSTOP | SA_NOCLDWAIT;
+	sigaction(SIGTSTP,&tstp_handler, 0);
+	
 	char pathFileHistory[DIRECTORY_MAX_LENGTH];
 	char directoryName[DIRECTORY_MAX_LENGTH];
 	char userName[USERNAME_MAX_LENGTH];
