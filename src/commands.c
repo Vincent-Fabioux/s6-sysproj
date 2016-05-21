@@ -1,8 +1,11 @@
 #include "commands.h"
-#include "step3.h"
 
+void handle_tstp(int num)
+{
+		kill(1, SIGSTOP);
+			printf("\n");
+}
 
-/* A COMMENTER/VERIFIER */
 void addInput(char *commande,char *pathFileHistory){
 	//On ouvre le fichier contenant les commandes et on le cree s'il n'existe pas.
 	//De plus on mets le pointeur a la fin du fichier pour pouvoir ecrire facilement dedans.
@@ -62,7 +65,9 @@ int executeCommand(char** command,int nb_pipes,int nb_redirections,int *position
 	int saved_stdin = dup(0), saved_stdout = dup(1); // Permet de sauvergarder les entrées et sorties standards
 	char **command2; // Permet de redecouper chaque commande avec ses arguments
 	char * path=malloc(sizeof(char)*COMMAND_MAX_LENGTH); // Permet de trouver le chemin de chaque commande
-
+	char * directory = malloc(sizeof(char)*DIRECTORY_MAX_LENGTH);
+	
+	getcwd(directory, DIRECTORY_MAX_LENGTH*sizeof(char));
 	command2=parseString(command[i]);// On decoupe une premiere fois la 1ere commande pour voir s'il ne s'agit pas de cd 
 	
 	//S'il s'agit de cd 
@@ -85,7 +90,7 @@ int executeCommand(char** command,int nb_pipes,int nb_redirections,int *position
 	
 		//Case '<' : entrée standard
 		if(positionRedirection[i]<0){
-			in = open(command[-1*positionRedirection[i]], O_RDONLY);	// On ouvre le fichier en question 
+			in = open(command[(-1)*positionRedirection[i]], O_RDONLY);	// On ouvre le fichier en question 
 			dup2(in,0);	 // On lui attribue l'entrée standard 
 			close(in);	// On le ferme
 		}
@@ -93,12 +98,15 @@ int executeCommand(char** command,int nb_pipes,int nb_redirections,int *position
 		//Case '>' : sortie standard
 		else{
 			out = open(command[positionRedirection[i]], O_WRONLY | O_TRUNC | O_CREAT, S_IRUSR | S_IRGRP | S_IWGRP | S_IWUSR);	// On ouvre le fichier en question et on le cree s'il n'existe pas
+			if(out<0){
+				printf("Error 2\n");
+			}  
 			dup2(out,1);	//On lui attribue la sortie standard
 			close(out);	// On le ferme
 		}
 	}
     //Gestion des pipes 
-    for (i = 0; i < nb_pipes+1; ++i) {	
+    for (i = 0; i <= nb_pipes; ++i) {	
 		if(i!=0){
 			path=NULL;
 			free(path);
@@ -130,14 +138,46 @@ int executeCommand(char** command,int nb_pipes,int nb_redirections,int *position
             for(j= 0; j < 2*nb_pipes; j++){
                     close(pipes[j]);
             }
+            //S'il s'agit de la commande touch
             if(strcmp(command2[0], "touch") == 0) // S'il s'agit de la commande touch
 				commandTouch(command2);
+			
+			//S'il s'agit de la commande cp
+			else if(!strcmp(command2[0], "kill"))
+			{
+					int temp=atoi(command2[1]);
+					if(temp!=0)
+						kill(temp, SIGINT);
+					else 
+						kill(0,SIGINT);
+			}
+			//S'il s'agit de la commande fg
+			else if(!strcmp(command2[0], "fg") && command2[1] != NULL && command2[2] == NULL)
+			{
+				int id = atoi(command2[1]);
+					if(id!=0)
+						kill(id, SIGINT);
+					else 
+						kill(0,SIGINT);
+				while(waitpid(0, &status, WUNTRACED));
+			}
+			//S'il s'agit de la commande bg 
+			else if(!strcmp(command2[0], "bg") && command2[1] != NULL && command2[2] == NULL)
+			{
+				int id = atoi(command2[1]);
+				if(id!=0)
+					kill(id-1, SIGCONT);
+				else
+					kill(0, SIGCONT);
+			}
 			else if(strcmp(command2[0], "cp") == 0) // S'il s'agit de la commande cp
 				commandCopy(command2);
 			else if(strcmp(command2[0], "cat") == 0) // S'il s'agit de la commande cat
 				commandCat(command2);
 			else if(strcmp(command2[0], "history") == 0) // S'il s'agit de la commande history
 				commandHistory(command2,pathFileHistory);
+			else if(strcmp(command2[0], "find") == 0) // S'il s'agit de la commande history
+				commandFind(command2,directory," ");
 			else if(execv(path, command2) < 0) // Sinon on execute la commande a l'aide de son chemin
 			{
 				printf("Erreur: Commande non existante...\n");
@@ -165,7 +205,7 @@ int executeCommand(char** command,int nb_pipes,int nb_redirections,int *position
     for(i = 0; i < nb_pipes + 1; i++){
         wait(&status);
     }
- 
+	free(directory);
 	return EXIT_SUCCESS;
 }
 
