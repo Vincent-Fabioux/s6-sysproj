@@ -103,7 +103,7 @@ void commandCd(char** command){
 }
 
 
-/* A COMMENTER */
+
 void commandTouch(char** command)
 {
 	if(!command[1] || strcmp(command[1], "") == 0)
@@ -132,62 +132,39 @@ void commandTouch(char** command)
 }
 
 
-/* A COMMENTER */
 void commandCat(char **command){
-	int i=0;						//Increment pour le nombre de lignes du fichier
+	int i=1;	
+	int j=0;						//Increment pour le nombre de lignes du fichier
+	int taille;						//Nombre de fichiers a lire
 	ssize_t read; 					//Permet de lire le nombre de lignes 
-	FILE *fp,*fp2;					//Fichiers a lire 
+	FILE *fp;						//Fichiers a lire 
     size_t len = 0;					// Permet de lire le nombre de lignes
     int printLines=0;				//Entier pour savoir si on doit afficher ou non les lignes(-n)
     char * line = NULL;				//Buffer contenant les lignes qu'on va lire au fur et a mesure.    
-    fp = fopen(command[1], "r");	//On ouvre le premier fichier 
-    fp2 = fopen(command[2], "r");	//On ouvre le deuxieme fichier
- 
-    //Si il y a probleme lors de l'ouverture du premier fichier
-    if (fp == NULL)
-        exit(EXIT_FAILURE);
- 
-    //S'il y a trop d'arguments
-    if(command[4]!=NULL){
-		printf("Erreur: Commande non existante...\n");
-		return;
-	}
-
-	//S'il y a plus d'un argument
-	if(command[2]!=NULL){
-		//Si l'on veut afficher le nombre de lignes
-		if(!strcmp(command[2],"-n")){
+	while(command[i]!=NULL){
+		if(!strcmp(command[i],"-n"))
 			printLines=1;
-		}
+		else
+			taille++;
+		i++;
 	}
-	//S'il y a plus de 2 arguments
-	if(command[3]!=NULL){
-		//Si l'on veut afficher le nombre de lignes
-		if(!strcmp(command[3],"-n")){
-			printLines=1;
-		}
-	}
-   //On va lire les lignes dans le premier fichier au fur et a mesure puis les afficher
-    while ((read = getline(&line, &len, fp)) != -1) {
-		i=i+1;
-		if(printLines==1){
-			printf("%d : ",i);
-		}
-		printf("%s", line);	
-	}
-	//On va lire les lignes dans le deuxieme fichier, s'il existe, au fur et a mesure puis les afficher
-	if(fp2!=NULL){
-		while ((read = getline(&line, &len, fp2)) != -1) {
-			i=i+1;
-			if(printLines==1){
-				printf("%d : ",i);
-			}
+	//On va lire tous les fichiers
+	for(i=1;i<=taille;i++){
+		fp = fopen(command[i], "r");
+		if (fp == NULL)
+			exit(EXIT_FAILURE);
+		//On va lire ligne par ligne
+        while ((read = getline(&line, &len, fp)) != -1) {
+			j=j+1;
+			//Si l'on a activé l'affichage des lignes
+			if(printLines==1)
+				printf("%d : ",j);
 			printf("%s", line);	
 		}
+		line=NULL;
+		fclose(fp);
+
 	}
-    free(line);
-    fclose(fp);
-    fclose(fp2);
 }
 
 
