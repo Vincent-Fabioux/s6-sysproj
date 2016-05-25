@@ -265,7 +265,7 @@ int copyFromDir(char source[], char dest[])
 	destDir = opendir(dest);
 	if(!destDir)
 	{
-		printf("Impossible de trouver le dossier \"%s\"!\n", source);
+		printf("Impossible de trouver le dossier \"%s\"!\n", dest);
 		closedir(sourceDir);
 		return 0;
 	}
