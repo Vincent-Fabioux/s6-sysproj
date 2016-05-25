@@ -170,14 +170,22 @@ int executeCommand(char** command,int nb_pipes,int nb_redirections,int *position
 				else
 					kill(0, SIGCONT);
 			}
-			else if(strcmp(command2[0], "cp") == 0) // S'il s'agit de la commande cp
+			else if(strcmp(command2[0], "cp") == 0){ // S'il s'agit de la commande cp
 				commandCopy(command2);
-			else if(strcmp(command2[0], "cat") == 0) // S'il s'agit de la commande cat
+				exit(EXIT_SUCCESS);
+			}
+			else if(strcmp(command2[0], "cat") == 0){ // S'il s'agit de la commande cat
 				commandCat(command2);
-			else if(strcmp(command2[0], "history") == 0) // S'il s'agit de la commande history
+				exit(EXIT_SUCCESS);
+			}
+			else if(strcmp(command2[0], "history") == 0){ // S'il s'agit de la commande history
 				commandHistory(command2,pathFileHistory);
-			else if(strcmp(command2[0], "find") == 0) // S'il s'agit de la commande history
+				exit(EXIT_SUCCESS);
+			}
+			else if(strcmp(command2[0], "find") == 0){ // S'il s'agit de la commande history
 				commandFind(command2,directory," ");
+				exit(EXIT_SUCCESS);
+			}
 			else if(execv(path, command2) < 0) // Sinon on execute la commande a l'aide de son chemin
 			{
 				printf("Erreur: Commande non existante...\n");
