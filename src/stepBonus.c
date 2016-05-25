@@ -55,7 +55,9 @@ void commandFind(char **command, char *path, char *dir)
 							&& !strcmp(command[3], file->d_name))
 						   || search == 0)
 						{
-								printf("./%s%s \n", temp, file->d_name);
+							printf("./%s%s \n", temp, file->d_name);
+							if(search==1)
+								break;
 						}
 					}
 					if(S_ISDIR(type->st_mode))
